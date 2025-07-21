@@ -1,0 +1,29 @@
+service: whatis-api
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  timeout: 30
+  environment:
+    LLM_BASE_URL: ${env:LLM_BASE_URL, 'http://your-llm-endpoint'}
+    LLM_MODEL: ${env:LLM_MODEL, 'whatis.sh'}
+
+functions:
+  api:
+    handler: lambda_handler.handler
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: '*'
+      - httpApi:
+          path: /
+          method: '*'
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true

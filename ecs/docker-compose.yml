@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  whatis-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+    # TODO: Needs to be updated. 
+    #   - LLM_BASE_URL=http://llm:11434
+    #   - LLM_MODEL=whatis.sh
+    # depends_on:
+    #   - llm
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  llm:
+    image: ollama/ollama:latest
+    # ports:
+      # - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    command: ["ollama", "serve"]
+
+volumes:
+  ollama_data:
